@@ -1,0 +1,40 @@
+install dependencies
+tools
+entity frame work core
+sql
+cors
+install package from console if usesql server is not showing in startup.cs
+PM > Install-Package Microsoft.EntityFrameworkCore.SqlServer
+
+
+
+create models
+create db context
+
+namespace project_name
+{
+    public class AppDBContext : DbContext
+    {
+        public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
+        {
+
+        }
+
+        public DbSet<Model_name> Table_name { get; set; }
+    }
+}
+
+configure appsettings.json and add connection stirng
+
+configure startup file -> configureservices function and add
+lookout for config(may change depending on the name at upper level)
+services.AddDbContext<AspDbContext>(options =>
+    options.UseSqlServer(config.GetConnectionString("DatabaseConnectionStirng name")));
+
+
+add-migration inital-migrate
+update database
+
+test the api using postman
+
+add cors-for allowing to allow api calls
