@@ -1,0 +1,115 @@
+* Add cors to configure services, to enable webapi calls and consume it in our react app
+services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod()
+                .AllowAnyHeader());
+            });
+
+
+* use cors in configure for the same 
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+
+* set JSON as default in serializer using JSON 
+add dependency mvc.newtonsoftjson
+add this in configureservices
+
+services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft
+                .Json.ReferenceLoopHandling.Ignore)
+                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver
+                = new DefaultContractResolver());
+
+create react app using 
+npx create-react-app app-name
+
+install necessary dependency
+nodemon
+react-router-dom
+axios
+
+create .env to save REACT_API and make sure the name of the variable starts from 'REACT_APP_'
+REACT_APP_API = "http://localhost:5000/"
+after this restart the server to reflect the changes
+
+// For adding 
+export default class AddDepModal extends Component {
+    constructor(props) {
+        super(props);
+        this.state={
+            DepartmentName:''
+        }
+        this.submitHandler = this.submitHandler.bind(this);
+        this.changeHandler = this.changeHandler.bind(this);
+    }
+
+    changeHandler = e => {
+        this.setState({[e.target.name]:e.target.value})
+    }
+
+    submitHandler = e => {
+        e.preventDefault();
+        console.log(this.state);
+        axios.post(process.env.REACT_APP_API+'api/Departments', this.state)
+        .then(response => {
+            console.log(response)
+        })
+        .catch(error => {
+            console.log(error)
+        })
+        this.props.refresh();
+    }
+    render(){
+        const {DepartmentName} = this.state;
+        return (
+            
+            <div className="container">
+                <form onSubmit={this.submitHandler}>
+                    <input value={DepartmentName} onChange={e=>this.changeHandler(e)} type="text" name="DepartmentName" required placeholder="DepartmentName" />
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        );
+    }
+}
+
+// if update or delete are child components, you have to pass Id, & other data as props 
+import React, {Component} from 'react';
+import axios from 'axios';
+
+export default class DeleteDepModal extends Component {
+    constructor(props) {
+        super(props);
+        this.state={
+            DepartmentId:this.props.id,
+            DepartmentName:this.props.DepartmentName
+        }
+        this.submitHandler = this.submitHandler.bind(this);
+    }
+
+    submitHandler = e => {
+        e.preventDefault();
+        console.log(this.state);
+        axios.delete(process.env.REACT_APP_API+`api/Departments/${this.props.id}` ,this.state)
+        .then(response => {
+            console.log(response)
+        })
+        .catch(error => {
+            console.log(error)
+        })
+        this.props.refresh();
+    }
+    render(){
+        return (
+            
+            <div className="container">
+                <form onSubmit={this.submitHandler}>
+                        <input defaultValue={this.props.id} type="text" name="DepartmentId" disabled required />
+                        <input defaultValue={this.props.DepartmentName} disabled type="text" name="DepartmentName" required />
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        );
+    }
+}
