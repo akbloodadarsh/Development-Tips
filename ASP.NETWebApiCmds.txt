@@ -25,7 +25,10 @@ namespace project_name
 }
 
 configure appsettings.json and add connection stirng
-
+"ConnectionStrings": {
+    "EmpCon": "Server=DESKTOP-I910PHJ\\SQLEXPRESS;Database=EmployeeDB;Trusted_Connection=True;"
+  }
+  
 configure startup file -> configureservices function and add
 lookout for config(may change depending on the name at upper level)
 services.AddDbContext<AspDbContext>(options =>
