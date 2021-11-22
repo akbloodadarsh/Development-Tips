@@ -1,0 +1,119 @@
+* dependency
+BCrypt.Net-Next- for encrypting password
+tools
+Microsoft.Entity
+sql
+cors
+mvc.newtonsoftjson
+
+install package from console if usesql server is not showing in startup.cs
+PM > Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 0.0.0.0.0
+
+* Add cors to configure services, to enable webapi calls and consume it in our react app
+services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod()
+                .AllowAnyHeader());
+            });
+
+
+* use cors in configure for the same 
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+
+* set JSON as default in serializer using JSON 
+add this in configureservices
+
+services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft
+                .Json.ReferenceLoopHandling.Ignore)
+                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver
+                = new DefaultContractResolver());
+
+create models
+create db context
+
+namespace project_name
+{
+    public class AppDBContext : DbContext
+    {
+        public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
+        {
+
+        }
+
+        public DbSet<Model_name> Table_name { get; set; }
+    }
+}
+
+configure appsettings.json and add connection stirng
+"ConnectionStrings": {
+    "EmpCon": "Server=DESKTOP-I910PHJ\\SQLEXPRESS;Database=EmployeeDB;Trusted_Connection=True;"
+  }
+  
+configure startup file -> configureservices function and add
+lookout for config(may change depending on the name at upper level)
+services.AddDbContext<AspDbContext>(options =>
+    options.UseSqlServer(config.GetConnectionString("DatabaseConnectionStirng name")));
+
+
+add-migration inital-migrate
+update database
+
+* Use scafolding to create a controller using the model & dbcontext
+make the class 
+[Route(template:"")]
+    [ApiController]
+
+* and check its working using 
+[HttpGet]
+        public IActionResult Hello()
+        {
+            return Ok("Success");
+        }
+
+* you can use modelBuilder to perform changes to model
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasIndex(e => e.Email).IsUnique();
+            });
+        }
+
+Products
+pid
+NAME
+tYPE
+pRICE
+descirption
+
+
+detials
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
