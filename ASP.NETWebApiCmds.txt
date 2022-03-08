@@ -5,7 +5,7 @@ sql
 cors
 mvc.newtonsoftjson
 install package from console if usesql server is not showing in startup.cs
-PM > Install-Package Microsoft.EntityFrameworkCore.SqlServer
+PM > Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 5.0.14
 
 * Add cors to configure services, to enable webapi calls and consume it in our react app
 services.AddCors(c =>
