@@ -9,7 +9,8 @@ public class cosmos_db
   public string ContainerName {get; set;}
 }
 
-* Without using Azure Key Vault
+** Without using Azure Key Vault 
+create this & Paste it inside the WebAPI interface inside startup.cs
 private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigurationSection configurationSection)
 {
     var databaseName = configurationSection["DatabaseName"];
@@ -24,13 +25,22 @@ private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(I
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }
-* using Azure Key Vault
-private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigurationSection configurationSection)
+then add this line in configure services
+services.AddSingleton<ICosmosDbService>(InitializeCosmosClientInstanceAsync(Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
+
+*** For fetching configuration from Azure Key Vault***
+private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync()
 {
-    var databaseName = configurationSection["DatabaseName"];
-    var containerName = configurationSection["ContainerName"];
-    var account = configurationSection["Account"];
-    var key = configurationSection["Key"];
+    Environment.SetEnvironmentVariable("Keyvalutname","Endpoint");
+    var builder = new ConfigurationBuilder();
+    builder.AddAzureAppConfiguration(Environment.GetEnvironmentVariable("keyvaultname"));
+    var config = builder.Build();
+    var config_str = config["CosmosDb"].ToString();
+    var config_obj = JsonConvert.DeserializeObject<cosmos_db>(config_str);
+    var databaseName = config_obj.DatabaseName;
+    var containerName = config_obj.ContainerName;
+    var account = config_obj.Account;
+    var key = config_obj.Key;
 
     var client = new Microsoft.Azure.Cosmos.CosmosClient(account, key);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
@@ -39,5 +49,5 @@ private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(I
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     return cosmosDbService;
 }
-
-* Paste it inside the WebAPI interface inside startup.cs
+then add this line in configure services
+services.AddSingleton<ICosmosDbService>(InitializeCosmosClientInstanceAsync().GetAwaiter().GetResult());
