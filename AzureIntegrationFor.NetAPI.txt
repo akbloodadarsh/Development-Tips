@@ -1,4 +1,8 @@
 * For cosmos DB OPEN THIS LINK :- https://code-maze.com/azure-cosmos-db-with-asp-net-core-web-api/
+Remove this line from services because we dont need sql server as dependency anymore
+services.AddDbContext<EmployeeDBContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("EmployeeDBCon"))
+            );
 * Paste the interface ICosmosDbService & CosmosDbService inside the WebAPI interface inside startup.cs
 * Create a class
 public class cosmos_db 
@@ -69,3 +73,9 @@ private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync()
 }
 then add this line in configure services
 services.AddSingleton<ICosmosDbService>(InitializeCosmosClientInstanceAsync().GetAwaiter().GetResult());
+
+**** For Controller *****
+Paste it inside the Employee Controler & rest do from articele
+private IEnumerable<Employee> employees;
+
+
