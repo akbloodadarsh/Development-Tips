@@ -1,1 +1,43 @@
+* For cosmos DB OPEN THIS LINK :- https://code-maze.com/azure-cosmos-db-with-asp-net-core-web-api/
+* Paste the interface ICosmosDbService & CosmosDbService inside the WebAPI interface inside startup.cs
+* Create a class
+public class cosmos_db 
+{
+  public string Account {get; set;}
+  public string Key {get; set;}
+  public string DatabaseName {get; set;}
+  public string ContainerName {get; set;}
+}
 
+* Without using Azure Key Vault
+private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigurationSection configurationSection)
+{
+    var databaseName = configurationSection["DatabaseName"];
+    var containerName = configurationSection["ContainerName"];
+    var account = configurationSection["Account"];
+    var key = configurationSection["Key"];
+
+    var client = new Microsoft.Azure.Cosmos.CosmosClient(account, key);
+    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
+    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+
+    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
+    return cosmosDbService;
+}
+* using Azure Key Vault
+private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigurationSection configurationSection)
+{
+    var databaseName = configurationSection["DatabaseName"];
+    var containerName = configurationSection["ContainerName"];
+    var account = configurationSection["Account"];
+    var key = configurationSection["Key"];
+
+    var client = new Microsoft.Azure.Cosmos.CosmosClient(account, key);
+    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
+    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+
+    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
+    return cosmosDbService;
+}
+
+* Paste it inside the WebAPI interface inside startup.cs
