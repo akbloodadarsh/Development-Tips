@@ -10,6 +10,24 @@ public class cosmos_db
 }
 
 ** Without using Azure Key Vault 
+configure appsettings.json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "CosmosDb": {
+    "Account": "https://code-maze.documents.azure.com:443/",
+    "Key": "<PRIMARY KEY of Azure Cosmos account>",
+    "DatabaseName": "ToDoList",
+    "ContainerName": "Items"
+  }
+}
+
 create this & Paste it inside the WebAPI interface inside startup.cs
 private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigurationSection configurationSection)
 {
