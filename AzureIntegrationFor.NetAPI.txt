@@ -33,6 +33,7 @@ configure appsettings.json
 }
 
 create this & Paste it inside the WebAPI interface inside startup.cs
+paste the initialize cosmos client in the startup class
 private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigurationSection configurationSection)
 {
     var databaseName = configurationSection["DatabaseName"];
