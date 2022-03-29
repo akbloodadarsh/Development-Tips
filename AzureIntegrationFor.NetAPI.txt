@@ -54,9 +54,9 @@ services.AddSingleton<ICosmosDbService>(InitializeCosmosClientInstanceAsync(Conf
 *** For fetching configuration from Azure Key Vault***
 private static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync()
 {
-    Environment.SetEnvironmentVariable("Keyvalutname","Endpoint");
+    Environment.SetEnvironmentVariable("app-configuration-name","Endpoint");
     var builder = new ConfigurationBuilder();
-    builder.AddAzureAppConfiguration(Environment.GetEnvironmentVariable("keyvaultname"));
+    builder.AddAzureAppConfiguration(Environment.GetEnvironmentVariable("app-configuration-name"));
     var config = builder.Build();
     var config_str = config["CosmosDb"].ToString();
     var config_obj = JsonConvert.DeserializeObject<cosmos_db>(config_str);
